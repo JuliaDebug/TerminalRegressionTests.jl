@@ -54,7 +54,7 @@ module TerminalRegressionTests
             pty = VT100.create_pty(false)
             new(
             IOBuffer(UInt8[], true, true, true, true, typemax(Int)),
-            Base.TTY(pty.slave; readable = false), pty,
+            Base.TTY(pty.slave), pty,
             pty.em, false, Condition(), Condition())
         end
     end
