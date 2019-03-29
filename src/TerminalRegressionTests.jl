@@ -133,6 +133,7 @@ module TerminalRegressionTests
         _compare(Vector{UInt8}(codeunits(decorator)), decoratorbuf)
     end
 
+    process_events_compat() = @static VERSION >= v"1.2.0-DEV.566" ? Base.process_events() : Base.process_events(false)
     function process_all_buffered(emuterm)
         # Since writes to the tty are asynchronous, there's an
         # inherent race condition between them being sent to the
@@ -140,12 +141,12 @@ module TerminalRegressionTests
         # here and wait for it to be read back.
         sentinel = Ref{UInt32}(0xffffffff)
         ccall(:write, Cvoid, (Cint, Ptr{UInt32}, Csize_t), emuterm.pty.slave, sentinel, sizeof(UInt32))
-        Base.process_events(false)
+        process_events_compat()
         # Read until we get our sentinel
         while bytesavailable(emuterm.pty.master) < sizeof(UInt32) ||
             reinterpret(UInt32, emuterm.pty.master.buffer.data[(emuterm.pty.master.buffer.size-3):emuterm.pty.master.buffer.size])[] != sentinel[]
             emuterm.aggressive_yield || yield()
-            Base.process_events(false)
+            process_events_compat()
             sleep(0.01)
         end
         data = IOBuffer(readavailable(emuterm.pty.master)[1:(end-4)])
