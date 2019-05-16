@@ -1,0 +1,11 @@
+name = "TerminalRegressionTests"
+uuid = "98bfdc55-cc95-5876-a49a-74609291cbe0"
+author = ["Keno Fischer <keno@juliacomputing.com>"]
+version = "0.1.2"
+
+[deps]
+REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
+VT100 = "7774df62-37c0-5c21-b34d-f6d7f98f54bc"
+
+[compat]
+julia = "1.1"
