@@ -155,7 +155,7 @@ module TerminalRegressionTests
         end
     end
 
-    function automated_test(f, outputpath, inputs; aggressive_yield = false)
+    function automated_test(f, cmp, outputpath, inputs; aggressive_yield = false)
         emuterm = EmulatedTerminal()
         emuterm.aggressive_yield = aggressive_yield
         emuterm.terminal.warn = true
@@ -178,7 +178,7 @@ module TerminalRegressionTests
                 decorator = isempty(decorators) ? nothing : popfirst!(decorators)
                 @assert !eof(emuterm.pty.master)
                 process_all_buffered(emuterm)
-                compare(emuterm.terminal, output, decorator)
+                cmp(emuterm.terminal, output, decorator)
                 print(emuterm.input_buffer, input); notify(emuterm.filled)
             end
             Base.notify(c)
@@ -190,6 +190,7 @@ module TerminalRegressionTests
             wait(c)
         end
     end
+    automated_test(f, outputpath, inputs; kwargs...) = automated_test(f, compare, outputpath, inputs; kwargs...)
 
     function create_automated_test(f, outputpath, inputs; aggressive_yield=false)
         emuterm = EmulatedTerminal()
