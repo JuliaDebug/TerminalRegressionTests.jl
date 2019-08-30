@@ -1,5 +1,6 @@
 module TerminalRegressionTests
     using VT100
+    using DeepDiffs
     import REPL
 
     function load_outputs(file)
@@ -98,28 +99,31 @@ module TerminalRegressionTests
     REPL.Terminals.pipe_writer(t::EmulatedTerminal) = t.out_stream
 
     function _compare(output, outbuf)
-        result = outbuf == output
+        outstring = String(output)
+        bufstring = String(outbuf)
+        result = outstring == bufstring
         if !result
             println("Test failed. Expected result written to expected.out,
                 actual result written to failed.out")
             open("failed.out","w") do f
-                write(f,outbuf)
+                write(f,bufstring)
             end
             open("expected.out","w") do f
-                write(f,output)
+                write(f,outstring)
             end
-            for (i,c) in enumerate(output)
-                if c == Char(outbuf[i])
-                    print(Char(c))
-                elseif c == '\n'
-                    println()
-                else
-                    printstyled(stdout, "█", color=:red)
-                end
-            end
+            println(stdout, deepdiff(outstring, bufstring))
             error()
         end
         return result
+    end
+
+    function escape_char(c)
+        if c == '\n'
+            return "\\n"
+        elseif c == ' '
+            return "\\s"
+        end
+        return c
     end
 
     function compare(em, output, decorator = nothing)
