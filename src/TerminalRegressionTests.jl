@@ -117,15 +117,6 @@ module TerminalRegressionTests
         return result
     end
 
-    function escape_char(c)
-        if c == '\n'
-            return "\\n"
-        elseif c == ' '
-            return "\\s"
-        end
-        return c
-    end
-
     function compare(em, output, decorator = nothing)
         buf = IOBuffer()
         decoratorbuf = IOBuffer()
