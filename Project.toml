@@ -12,7 +12,7 @@ VT100 = "7774df62-37c0-5c21-b34d-f6d7f98f54bc"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
-DeepDiffs = "0.7"
+DeepDiffs = "1"
 VT100 = "0.3"
 julia = "1.1"
 
