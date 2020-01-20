@@ -8,12 +8,13 @@ DeepDiffs = "ab62b9b5-e342-54a8-a765-a90f495de1a6"
 REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 VT100 = "7774df62-37c0-5c21-b34d-f6d7f98f54bc"
 
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
 [compat]
+DeepDiffs = "1.1"
 VT100 = "0.3"
 julia = "1.1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test"]
