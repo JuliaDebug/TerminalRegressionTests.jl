@@ -1,6 +1,6 @@
 # TerminalRegressionTests - Test your terminal UIs for regressions
 
-[![Build Status](https://travis-ci.org/Keno/VT100.jl.svg?branch=master)](https://travis-ci.org/Keno/TerminalRegressionTests.jl)
+[![CI](https://github.com/JuliaDebug/TerminalRegressionTests.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaDebug/TerminalRegressionTests.jl/actions/workflows/CI.yml)
 
 This package builds upon the [VT100.jl](https://github.com/Keno/VT100.jl)
 package to provide automated testing of terminal based application. Both
