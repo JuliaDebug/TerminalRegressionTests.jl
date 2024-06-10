@@ -54,9 +54,10 @@ module TerminalRegressionTests
         function EmulatedTerminal()
             pty = VT100.create_pty(false)
             new(
-            IOBuffer(UInt8[], true, true, true, true, typemax(Int)),
-            Base.TTY(pty.slave), pty,
-            pty.em, false, Condition(), Condition())
+                IOBuffer(UInt8[]; read = true, write = true, append = true, truncate = true, maxsize = typemax(Int)),
+                Base.TTY(pty.slave), pty,
+                pty.em, false, Condition(), Condition()
+            )
         end
     end
     function Base.wait(term::EmulatedTerminal)
@@ -90,6 +91,17 @@ module TerminalRegressionTests
         end
         term.waiting = false
         readuntil(term.input_buffer, delim; kwargs...)
+    end
+    function Base.readline(term::EmulatedTerminal; keep::Bool=false)
+        line = readuntil(term, 0x0a, keep=true)::Vector{UInt8}
+        i = length(line)
+        if keep || i == 0 || line[i] != 0x0a
+            return String(line)
+        elseif i < 2 || line[i-1] != 0x0d
+            return String(resize!(line,i-1))
+        else
+            return String(resize!(line,i-2))
+        end
     end
     REPL.Terminals.raw!(t::EmulatedTerminal, raw::Bool) =
         ccall(:jl_tty_set_mode,
