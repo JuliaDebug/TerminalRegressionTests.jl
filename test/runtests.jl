@@ -1,22 +1,22 @@
 using TerminalRegressionTests
 using Test
 
-const thisdir = dirname(@__FILE__)
 TerminalRegressionTests.automated_test(
-                joinpath(thisdir,"TRT.multiout"),
+                joinpath(@__DIR__, "TRT.multiout"),
                 ["Julia\n","Yes!!\n"]) do emuterm
     print(emuterm, "Please enter your name: ")
     name = strip(readline(emuterm))
+    @test name == "Julia"
     print(emuterm, "\nHello $name. Do you like tests? ")
     resp = strip(readline(emuterm))
-    @assert resp == "Yes!!"
+    @test resp == "Yes!!"
 end
 
 mktemp() do _, io
     redirect_stderr(io) do
         redirect_stdout(io) do
             @test_throws ErrorException TerminalRegressionTests.automated_test(
-                            joinpath(thisdir,"TRT2.multiout"),
+                            joinpath(@__DIR__, "TRT2.multiout"),
                             [""]) do emuterm
                 println(emuterm, "Hello, world!")   # generate with "wurld" rather than "world"
                 readline(emuterm)   # needed to produce output?
@@ -36,9 +36,10 @@ function compare_replace(em, output; replace=nothing)
     TerminalRegressionTests._compare(Vector{UInt8}(codeunits(output)), outbuf) || return false
     return true
 end
-const cmp(a, b, decorator) = compare_replace(a, b; replace="wurld"=>"world")
+
+cmp(a, b, decorator) = compare_replace(a, b; replace="wurld"=>"world")
 TerminalRegressionTests.automated_test(cmp,
-                joinpath(thisdir,"TRT2.multiout"),
+                joinpath(@__DIR__, "TRT2.multiout"),
                 [""]) do emuterm
     println(emuterm, "Hello, world!")
     readline(emuterm)
