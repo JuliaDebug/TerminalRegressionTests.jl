@@ -67,10 +67,11 @@ module TerminalRegressionTests
     end
     for T in (Vector{UInt8}, Array, AbstractArray, String, Symbol, Any, Char, UInt8)
         function Base.write(term::EmulatedTerminal,a::T)
-            write(term.out_stream, a)
+            b = write(term.out_stream, a)
             if term.aggressive_yield
                 notify(term.step)
             end
+            return b
         end
     end
     Base.eof(term::EmulatedTerminal) = false
