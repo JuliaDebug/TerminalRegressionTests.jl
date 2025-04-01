@@ -1,7 +1,7 @@
 name = "TerminalRegressionTests"
 uuid = "98bfdc55-cc95-5876-a49a-74609291cbe0"
 author = ["Keno Fischer <keno@juliacomputing.com>"]
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 DeepDiffs = "ab62b9b5-e342-54a8-a765-a90f495de1a6"
