@@ -1,5 +1,31 @@
 using TerminalRegressionTests
 using Test
+import REPL
+
+@testset "EmulatedTerminal" begin
+    emuterm = TerminalRegressionTests.EmulatedTerminal()
+    if isdefined(REPL.LineEdit, :hascolor)
+        @test REPL.LineEdit.hascolor(emuterm)
+    end
+    try
+        peek_task = @async peek(emuterm)
+        wait_task = @async wait(emuterm)
+        wait_done = timedwait(() -> istaskdone(wait_task), 10) == :ok
+        @test wait_done
+        wait_done && fetch(wait_task)
+        @test emuterm.waiting
+        print(emuterm.input_buffer, 'x')
+        TerminalRegressionTests.notify_condition(emuterm.filled)
+        peek_done = timedwait(() -> istaskdone(peek_task), 10) == :ok
+        @test peek_done
+        if peek_done
+            @test fetch(peek_task) == UInt8('x')
+            @test read(emuterm, Char) == 'x'
+        end
+    finally
+        finalize(emuterm.pty)
+    end
+end
 
 TerminalRegressionTests.automated_test(
                 joinpath(@__DIR__, "TRT.multiout"),
