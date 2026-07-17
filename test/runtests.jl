@@ -2,19 +2,21 @@ using TerminalRegressionTests
 using Test
 import REPL
 
-@testset "EmulatedTerminal" begin
-    emuterm = TerminalRegressionTests.EmulatedTerminal()
-    if isdefined(REPL.LineEdit, :hascolor)
-        @test REPL.LineEdit.hascolor(emuterm)
+@static if VERSION >= v"1.5"
+    @testset "EmulatedTerminal" begin
+        emuterm = TerminalRegressionTests.EmulatedTerminal()
+        if isdefined(REPL.LineEdit, :hascolor)
+            @test REPL.LineEdit.hascolor(emuterm)
+        end
+        peek_task = @async peek(emuterm)
+        wait(emuterm)
+        @test emuterm.waiting
+        print(emuterm.input_buffer, 'x')
+        TerminalRegressionTests.notify_condition(emuterm.filled)
+        @test fetch(peek_task) == UInt8('x')
+        @test read(emuterm, Char) == 'x'
+        finalize(emuterm.pty)
     end
-    peek_task = @async peek(emuterm)
-    wait(emuterm)
-    @test emuterm.waiting
-    print(emuterm.input_buffer, 'x')
-    TerminalRegressionTests.notify_condition(emuterm.filled)
-    @test fetch(peek_task) == UInt8('x')
-    @test read(emuterm, Char) == 'x'
-    finalize(emuterm.pty)
 end
 
 TerminalRegressionTests.automated_test(
